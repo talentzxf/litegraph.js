@@ -6820,15 +6820,27 @@ LGraphNode.prototype.executeAction = function(action)
         return false;
     };
 
+    // Debounce mouse wheel: https://stackoverflow.com/questions/54662424/function-triggered-many-times-when-mouse-wheel-even-triggered
+    let lastWheelTime = 0
+    let wheelInterval = 1000.0/30.0
+
     /**
      * Called when a mouse wheel event has to be processed
      * @method processMouseWheel
      **/
     LGraphCanvas.prototype.processMouseWheel = function(e) {
         if (!this.graph || !this.allow_dragcanvas) {
-            return;
+            return false;
         }
 
+        let currentTime = Date.now()
+        if(lastWheelTime > 0 && (currentTime - lastWheelTime) <= wheelInterval){
+            console.log("Skipped mouse wheel")
+            e.preventDefault()
+            return false;
+        }
+
+        lastWheelTime = currentTime
         var delta = e.wheelDeltaY != null ? e.wheelDeltaY : e.detail * -60;
 
         this.adjustMouseEvent(e);
@@ -6837,20 +6849,23 @@ LGraphNode.prototype.executeAction = function(action)
 		var y = e.clientY;
 		var is_inside = !this.viewport || ( this.viewport && x >= this.viewport[0] && x < (this.viewport[0] + this.viewport[2]) && y >= this.viewport[1] && y < (this.viewport[1] + this.viewport[3]) );
 		if(!is_inside)
-			return;
+			return false;
 
         var scale = this.ds.scale;
 
         if (delta > 0) {
-            scale *= 1.1;
+            scale *= 1.02;
         } else if (delta < 0) {
-            scale *= 1 / 1.1;
+            scale *= 1 / 1.02;
         }
 
         //this.setZoom( scale, [ e.clientX, e.clientY ] );
-        this.ds.changeScale(scale, [e.clientX, e.clientY]);
+        this.ds.changeScale(scale, [e.offsetX, e.offsetY]);
 
         this.graph.change();
+
+        console.log("Scroll event type:" + e.type)
+        console.log("LGraph Scale:" + scale)
 
         e.preventDefault();
         return false; // prevent default
