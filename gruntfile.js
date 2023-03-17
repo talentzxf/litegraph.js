@@ -15,9 +15,16 @@ module.exports = function (grunt) {
       'src/nodes/audio.js',
       'src/nodes/network.js'
     ],
+    huaHuoProjectFiles: ['src/litegraph.js',
+      'src/nodes/base.js'
+    ],
     concat: {
       build: {
         src: '<%= projectFiles %>',
+        dest: 'build/litegraph.js'
+      },
+      buildHuahuo: {
+        src: '<%= huaHuoProjectFiles %>',
         dest: 'build/litegraph.js'
       }
     },
@@ -44,4 +51,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-closure-tools')
 
   grunt.registerTask('build', ['concat:build', 'closureCompiler'])
+  grunt.registerTask('buildHuahuo', ['concat:buildHuahuo', 'closureCompiler'])
 }

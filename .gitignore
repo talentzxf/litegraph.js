@@ -9,3 +9,5 @@ temp/*
 !/.vscode/extensions.json
 *.bak
 .project
+.idea/
+.idea/*
