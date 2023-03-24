@@ -16,7 +16,10 @@ module.exports = function (grunt) {
       'src/nodes/network.js'
     ],
     huaHuoProjectFiles: ['src/litegraph.js',
-      'src/nodes/base.js'
+      'src/nodes/base.js',
+      'src/nodes/math.js',
+      'src/nodes/math3d.js',
+      'src/nodes/strings.js'
     ],
     concat: {
       build: {
