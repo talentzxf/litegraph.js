@@ -19,7 +19,8 @@ module.exports = function (grunt) {
       'src/nodes/base.js',
       'src/nodes/math.js',
       'src/nodes/math3d.js',
-      'src/nodes/strings.js'
+      'src/nodes/strings.js',
+      'src/nodes/others.js'
     ],
     concat: {
       build: {
