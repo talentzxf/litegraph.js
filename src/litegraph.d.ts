@@ -1168,6 +1168,8 @@ export declare class LGraphCanvas {
     dirty_area: Vector4 | null;
     dirty_bgcanvas?: boolean;
     dirty_canvas?: boolean;
+    show_inputs_panel: boolean;
+
     drag_mode: boolean;
     dragging_canvas: boolean;
     dragging_rectangle: Vector4 | null;

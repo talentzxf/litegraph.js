@@ -7927,7 +7927,11 @@ LGraphNode.prototype.executeAction = function(action)
 		//draws panel in the corner 
 		if (this._graph_stack && this._graph_stack.length) {
 			this.drawSubgraphPanel( ctx );
-		}
+		} else {
+            if(this.show_inputs_panel){
+                this.drawSubgraphPanelLeft(this.graph, this, ctx)
+            }
+        }
 
 
         if (this.onDrawOverlay) {
