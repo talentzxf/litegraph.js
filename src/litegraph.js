@@ -8079,7 +8079,8 @@ LGraphNode.prototype.executeAction = function(action)
         bgcolor = bgcolor || LiteGraph.NODE_DEFAULT_COLOR;
         hovercolor = hovercolor || "#555";
         textcolor = textcolor || LiteGraph.NODE_TEXT_COLOR;
-        var yFix = y + LiteGraph.NODE_TITLE_HEIGHT + 2;	// fix the height with the title
+        // var yFix = y + LiteGraph.NODE_TITLE_HEIGHT + 2;	// fix the height with the title
+        var yFix = y
         var pos = this.mouse;
 
         // convert to canvas local position.
@@ -8088,6 +8089,9 @@ LGraphNode.prototype.executeAction = function(action)
 
         var hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, yFix, w, h);
         pos = this.last_click_position;
+
+        if(pos)
+            pos = [pos[0] - boundingRect.x, pos[1] - boundingRect.y]
         var clicked = pos && LiteGraph.isInsideRectangle(pos[0], pos[1], x, yFix, w, h);
 
         ctx.fillStyle = hover ? hovercolor : bgcolor;
