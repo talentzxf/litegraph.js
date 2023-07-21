@@ -851,6 +851,10 @@
         this.sendActionToCanvas("clear");
     };
 
+    LGraph.prototype.getInput = function (name){
+        return this.inputs[name]
+    }
+
     /**
      * Attach Canvas to this graph
      * @method attachCanvas
@@ -7903,7 +7907,7 @@ LGraphNode.prototype.executeAction = function(action)
             this.drawSubgraphPanel(ctx);
         } else {
             if (this.show_inputs_panel) {
-                this.drawSubgraphPanelLeft(this.graph, this, ctx)
+                this.drawSubgraphPanelLeft(this.graph, this.graph, ctx)
             }
         }
 
@@ -12488,9 +12492,17 @@ LGraphNode.prototype.executeAction = function(action)
             var elem = this.parentNode;
             var name = elem.querySelector(".name").value;
             var type = elem.querySelector(".type").value;
-            if (!name || node.findInputSlot(name) != -1)
-                return;
+
+            if(node.construct.name == "LGraph"){
+                if(!name || node.getInput(name) != null)
+                    return;
+            }else{
+                if (!name || node.findInputSlot(name) != -1)
+                    return;
+            }
+
             node.addInput(name, type);
+
             elem.querySelector(".name").value = "";
             elem.querySelector(".type").value = "";
             inner_refresh();
