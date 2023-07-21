@@ -842,7 +842,20 @@
         this.nodes_executedAction = [];
 
         //subgraph_data
-        this.inputs = {};
+        this.inputs = {
+            get length() {
+                let propertyDescriptors = Object.getOwnPropertyDescriptors(this)
+                let resultLength = 0
+                for (let propertyDescriptorKey of Object.keys(propertyDescriptors)) {
+                    let propertyDescriptor = propertyDescriptors[propertyDescriptorKey]
+                    if (propertyDescriptor.writable) {
+                        resultLength++
+                    }
+                }
+
+                return resultLength
+            }
+        };
         this.outputs = {};
 
         //notify canvas to redraw
@@ -850,6 +863,10 @@
 
         this.sendActionToCanvas("clear");
     };
+
+    LGraph.prototype.getInput = function (name) {
+        return this.inputs[name]
+    }
 
     /**
      * Attach Canvas to this graph
@@ -7903,7 +7920,7 @@ LGraphNode.prototype.executeAction = function(action)
             this.drawSubgraphPanel(ctx);
         } else {
             if (this.show_inputs_panel) {
-                this.drawSubgraphPanelLeft(this.graph, this, ctx)
+                this.drawSubgraphPanelLeft(this.graph, this.graph, ctx)
             }
         }
 
@@ -8090,7 +8107,7 @@ LGraphNode.prototype.executeAction = function(action)
         var hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, yFix, w, h);
         pos = this.last_click_position;
 
-        if(pos)
+        if (pos)
             pos = [pos[0] - boundingRect.x, pos[1] - boundingRect.y]
         var clicked = pos && LiteGraph.isInsideRectangle(pos[0], pos[1], x, yFix, w, h);
 
@@ -12448,6 +12465,10 @@ LGraphNode.prototype.executeAction = function(action)
         this.canvas.parentNode.appendChild(panel);
     }
 
+    function nodeIsGraph(node){
+        return node.constructor.name == "LGraph"
+    }
+
     LGraphCanvas.prototype.showSubgraphPropertiesDialog = function (node) {
         console.log("showing subgraph properties dialog");
 
@@ -12460,24 +12481,47 @@ LGraphNode.prototype.executeAction = function(action)
         panel.classList.add("subgraph_dialog");
 
         function inner_refresh() {
+            let updateEleFunc = function (input) {
+                if (input.not_subgraph_input)
+                    return
+                var html = "<button>&#10005;</button> <span class='bullet_icon'></span><span class='name'></span><span class='type'></span>";
+                var elem = panel.addHTML(html, "subgraph_property");
+                elem.dataset["name"] = input.name;
+                elem.dataset["slot"] = i;
+                elem.querySelector(".name").innerText = input.name;
+                elem.querySelector(".type").innerText = input.type;
+                elem.querySelector("button").addEventListener("click", function (e) {
+                    e.stopPropagation()
+                    e.preventDefault()
+                    
+                    if(nodeIsGraph(node)){
+                        node.removeInput(input.name)
+                    }else{
+                        node.removeInput(Number(this.parentNode.dataset["slot"]));
+                    }
+
+                    inner_refresh();
+                });
+                return
+            }
+
             panel.clear();
 
             //show currents
             if (node.inputs)
-                for (var i = 0; i < node.inputs.length; ++i) {
-                    var input = node.inputs[i];
-                    if (input.not_subgraph_input)
-                        continue;
-                    var html = "<button>&#10005;</button> <span class='bullet_icon'></span><span class='name'></span><span class='type'></span>";
-                    var elem = panel.addHTML(html, "subgraph_property");
-                    elem.dataset["name"] = input.name;
-                    elem.dataset["slot"] = i;
-                    elem.querySelector(".name").innerText = input.name;
-                    elem.querySelector(".type").innerText = input.type;
-                    elem.querySelector("button").addEventListener("click", function (e) {
-                        node.removeInput(Number(this.parentNode.dataset["slot"]));
-                        inner_refresh();
-                    });
+                if(nodeIsGraph(node)){
+                    let propertyDescriptors = Object.getOwnPropertyDescriptors(node.inputs)
+                    for (let propertyDescriptorKey of Object.keys(propertyDescriptors)) {
+                        let inputPropertyDescriptor = propertyDescriptors[propertyDescriptorKey]
+                        if(inputPropertyDescriptor.writable){
+                            updateEleFunc(inputPropertyDescriptor.value)
+                        }
+                    }
+                }else{
+                    for (var i = 0; i < node.inputs.length; ++i) {
+                        var input = node.inputs[i];
+                        updateEleFunc(input)
+                    }
                 }
         }
 
@@ -12485,12 +12529,23 @@ LGraphNode.prototype.executeAction = function(action)
         var html = " + <span class='label'>Name</span><input class='name'/><span class='label'>Type</span><input class='type'></input><button>+</button>";
         var elem = panel.addHTML(html, "subgraph_property extra", true);
         elem.querySelector("button").addEventListener("click", function (e) {
+            e.stopPropagation()
+            e.preventDefault()
+
             var elem = this.parentNode;
             var name = elem.querySelector(".name").value;
             var type = elem.querySelector(".type").value;
-            if (!name || node.findInputSlot(name) != -1)
-                return;
+
+            if (node.constructor.name == "LGraph") {
+                if (!name || node.getInput(name) != null)
+                    return;
+            } else {
+                if (!name || node.findInputSlot(name) != -1)
+                    return;
+            }
+
             node.addInput(name, type);
+
             elem.querySelector(".name").value = "";
             elem.querySelector(".type").value = "";
             inner_refresh();
