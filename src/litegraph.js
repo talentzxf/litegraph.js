@@ -1752,16 +1752,29 @@
      * @param {*} value [optional]
      */
     LGraph.prototype.addInput = function (name, type, value) {
-        var input = this.inputs[name];
-        if (input) {
-            //already exist
+
+        // If input already exits, will update the input
+        // var input = this.inputs[name];
+        // if (input) {
+        //     //already exist
+        //     return;
+        // }
+
+        if(name == "length" || name == "getLength")
+        {
+            console.log("Can't use preserved key words, change the property to another name")
             return;
         }
 
         this.beforeChange();
 
         let currentInputCount = this.inputs.length
-        this.inputs[name] = {name: name, type: type, value: value, index: currentInputCount};
+        if(this.inputs.hasOwnProperty(name)){
+            this.inputs[name] = {name: name, type: type, value: value, index: currentInputCount - 1}; // Update of current input. Index won't change.
+        }else{
+            this.inputs[name] = {name: name, type: type, value: value, index: currentInputCount};
+        }
+
         this._version++;
         this.afterChange();
 
@@ -1872,7 +1885,8 @@
             return false;
         }
 
-        delete this.inputs[name];
+        // delete this.inputs[name];
+        this.inputs[name].not_subgraph_input = true
         this._version++;
 
         if (this.onInputRemoved) {
@@ -7997,10 +8011,10 @@ LGraphNode.prototype.executeAction = function(action)
         if (subnode.inputs)
             for (var i = 0; i < subnode.inputs.length; ++i) {
                 var input = subnode.inputs[i];
-                if(input == null){
+                if (input == null) {
                     input = subnode.inputs.getInput(i)
                 }
-                if (input.not_subgraph_input)
+                if (input == null || input.not_subgraph_input)
                     continue;
 
                 //input button clicked
@@ -12555,7 +12569,7 @@ LGraphNode.prototype.executeAction = function(action)
             var type = elem.querySelector(".type").value;
 
             if (node.constructor.name == "LGraph") {
-                if (!name || node.getInput(name) != null)
+                if (!name)
                     return;
             } else {
                 if (!name || node.findInputSlot(name) != -1)
