@@ -848,12 +848,25 @@
                 let resultLength = 0
                 for (let propertyDescriptorKey of Object.keys(propertyDescriptors)) {
                     let propertyDescriptor = propertyDescriptors[propertyDescriptorKey]
-                    if (propertyDescriptor.writable) {
+
+                    // Is writable and is not a function.
+                    if (propertyDescriptor.writable && !(propertyDescriptor.value instanceof Function)) {
                         resultLength++
                     }
                 }
 
                 return resultLength
+            },
+
+            getInput: function (idx) {
+                for (let key in this) {
+                    let value = this[key]
+
+                    if (value && value.index == idx)
+                        return value
+                }
+
+                return null
             }
         };
         this.outputs = {};
@@ -1746,7 +1759,9 @@
         }
 
         this.beforeChange();
-        this.inputs[name] = {name: name, type: type, value: value};
+
+        let currentInputCount = this.inputs.length
+        this.inputs[name] = {name: name, type: type, value: value, index: currentInputCount};
         this._version++;
         this.afterChange();
 
@@ -7982,6 +7997,9 @@ LGraphNode.prototype.executeAction = function(action)
         if (subnode.inputs)
             for (var i = 0; i < subnode.inputs.length; ++i) {
                 var input = subnode.inputs[i];
+                if(input == null){
+                    input = subnode.inputs.getInput(i)
+                }
                 if (input.not_subgraph_input)
                     continue;
 
@@ -12465,7 +12483,7 @@ LGraphNode.prototype.executeAction = function(action)
         this.canvas.parentNode.appendChild(panel);
     }
 
-    function nodeIsGraph(node){
+    function nodeIsGraph(node) {
         return node.constructor.name == "LGraph"
     }
 
@@ -12493,10 +12511,10 @@ LGraphNode.prototype.executeAction = function(action)
                 elem.querySelector("button").addEventListener("click", function (e) {
                     e.stopPropagation()
                     e.preventDefault()
-                    
-                    if(nodeIsGraph(node)){
+
+                    if (nodeIsGraph(node)) {
                         node.removeInput(input.name)
-                    }else{
+                    } else {
                         node.removeInput(Number(this.parentNode.dataset["slot"]));
                     }
 
@@ -12509,15 +12527,15 @@ LGraphNode.prototype.executeAction = function(action)
 
             //show currents
             if (node.inputs)
-                if(nodeIsGraph(node)){
+                if (nodeIsGraph(node)) {
                     let propertyDescriptors = Object.getOwnPropertyDescriptors(node.inputs)
                     for (let propertyDescriptorKey of Object.keys(propertyDescriptors)) {
                         let inputPropertyDescriptor = propertyDescriptors[propertyDescriptorKey]
-                        if(inputPropertyDescriptor.writable){
+                        if (inputPropertyDescriptor.writable && !(inputPropertyDescriptor.value instanceof Function)) {
                             updateEleFunc(inputPropertyDescriptor.value)
                         }
                     }
-                }else{
+                } else {
                     for (var i = 0; i < node.inputs.length; ++i) {
                         var input = node.inputs[i];
                         updateEleFunc(input)
