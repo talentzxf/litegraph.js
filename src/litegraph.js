@@ -1773,14 +1773,14 @@
             this.inputs[name] = {name: name, type: type, value: value, index: currentInputCount - 1}; // Update of current input. Index won't change.
         }else{
             this.inputs[name] = {name: name, type: type, value: value, index: currentInputCount};
+
+            if (this.onInputAdded) {
+                this.onInputAdded(name, type);
+            }
         }
 
         this._version++;
         this.afterChange();
-
-        if (this.onInputAdded) {
-            this.onInputAdded(name, type);
-        }
 
         if (this.onInputsOutputsChange) {
             this.onInputsOutputsChange();
