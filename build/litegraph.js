@@ -2175,7 +2175,8 @@
             groups: groups_info,
             config: this.config,
             extra: this.extra,
-            version: LiteGraph.VERSION
+            version: LiteGraph.VERSION,
+            inputs: this.inputs
         };
 
         if (this.onSerialize)
@@ -2197,6 +2198,12 @@
 
         if (!keep_old) {
             this.clear();
+        }
+
+        if(data.inputs){
+            for(let inputEntry of data.inputs){
+                this.addInput(inputEntry)
+            }
         }
 
         var nodes = data.nodes;
