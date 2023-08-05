@@ -2201,8 +2201,11 @@
         }
 
         if(data.inputs){
-            for(let inputEntry of data.inputs){
-                this.addInput(inputEntry)
+            for(let inputEntry of Object.entries(data.inputs)){
+                if(inputEntry[0] == "length")
+                    continue
+
+                this.addInput(inputEntry[1].name, inputEntry[1].type, inputEntry[1].value)
             }
         }
 
