@@ -548,9 +548,13 @@
         this.setOutputData(0, data.value !== undefined ? data.value : this.properties.value );
     };
 
-    GraphInput.prototype.onRemoved = function() {
-        if (this.name_in_graph) {
-            this.graph.removeInput(this.name_in_graph);
+    GraphInput.prototype.onRemoved = function() { // There might be multiple GraphInput nodes, removing the input node doesn't mean we need to remove the Graph input.
+        // if (this.name_in_graph) {
+        //     this.graph.removeInput(this.name_in_graph);
+        // }
+
+        if(this.graph && this.graph.onInputNodeRemoved){
+            this.graph.onInputNodeRemoved()
         }
     };
 
