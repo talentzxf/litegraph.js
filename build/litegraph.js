@@ -2230,7 +2230,7 @@
 
         //copy all stored fields
         for (var i in data) {
-            if (i == "nodes" || i == "groups") //links must be accepted
+            if (i == "nodes" || i == "groups" || i == "inputs") //links must be accepted. graph inputs has been set before.
                 continue;
             this[i] = data[i];
         }
@@ -12554,6 +12554,9 @@ LGraphNode.prototype.executeAction = function(action)
                 if (nodeIsGraph(node)) {
                     let propertyDescriptors = Object.getOwnPropertyDescriptors(node.inputs)
                     for (let propertyDescriptorKey of Object.keys(propertyDescriptors)) {
+                        if(propertyDescriptorKey == "length")
+                            continue;
+
                         let inputPropertyDescriptor = propertyDescriptors[propertyDescriptorKey]
                         if (inputPropertyDescriptor.writable && !(inputPropertyDescriptor.value instanceof Function)) {
                             updateEleFunc(inputPropertyDescriptor.value)
