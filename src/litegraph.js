@@ -871,6 +871,12 @@
         };
         this.outputs = {};
 
+        // Param: (propertyName:string)=> value
+        this.getInputValueFunction = null;
+
+        // Param: (propertyName:string, value)=> void
+        this.setInputValueFunction = null;
+
         //notify canvas to redraw
         this.change();
 
@@ -8041,6 +8047,12 @@ LGraphNode.prototype.executeAction = function(action)
                         this.dragging_canvas = false;
                         newnode.setProperty("name", input.name);
                         newnode.setProperty("type", input.type);
+
+                        if(this.graph.getInputValueFunction){
+                            let value = this.graph.getInputValueFunction(input.name)
+                            newnode.setProperty("value", value)
+                        }
+
                         this.node_dragged.pos[0] = this.graph_mouse[0] - 5;
                         this.node_dragged.pos[1] = this.graph_mouse[1] - 5;
                         this.graph.afterChange();

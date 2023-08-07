@@ -447,9 +447,10 @@
     GraphInput.title = "Input";
     GraphInput.desc = "Input of the graph";
 
-	GraphInput.prototype.onConfigure = function()
+	GraphInput.prototype.onConfigure = function(info)
 	{
-		this.updateType();
+        // Why updateType again?? It's not necessary.
+		// this.updateType();
 	}
 
 	//ensures the type in the node output and the type in the associated graph input are the same
@@ -521,6 +522,7 @@
 		}
 		else if( name == "value" )
 		{
+            this.value_widget.value = v
 		}
 	}
 
