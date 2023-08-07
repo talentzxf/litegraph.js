@@ -14788,6 +14788,10 @@ if (typeof exports != "undefined") {
 		else if( name == "value" )
 		{
             this.value_widget.value = v
+
+            if(this.graph.setInputValueFunction){
+                this.graph.setInputValueFunction(this.properties.name, v)
+            }
 		}
 	}
 
