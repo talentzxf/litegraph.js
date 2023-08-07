@@ -525,7 +525,9 @@
             this.value_widget.value = v
 
             if(this.graph.setInputValueFunction){
-                this.graph.setInputValueFunction(this.properties.name, v)
+                if(this.graph.getInputValueFunction("velocity") != v){
+                    this.graph.setInputValueFunction(this.properties.name, v)
+                }
             }
 		}
 	}
