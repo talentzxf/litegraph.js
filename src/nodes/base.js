@@ -552,6 +552,17 @@
 			return;
         }
 
+        // read from getter
+        if(this.graph.getInputValueFunction){
+            data = this.graph.getInputValueFunction(this.properties.name)
+            if(data != null){
+                this.setOutputData(0, data)
+
+                this.properties.value = data
+                return
+            }
+        }
+
         this.setOutputData(0, data.value !== undefined ? data.value : this.properties.value );
     };
 
