@@ -436,7 +436,8 @@
             this.properties.value,
             function(v) {
                 that.setProperty("value",v);
-            }
+            },
+            "value"
         );
 
         this.widgets_up = true;

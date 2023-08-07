@@ -12598,6 +12598,8 @@ LGraphNode.prototype.executeAction = function(action)
             elem.querySelector(".name").value = "";
             elem.querySelector(".type").value = "";
             inner_refresh();
+
+            node.setDirtyCanvas(true, true);
         });
 
         inner_refresh();

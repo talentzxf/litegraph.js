@@ -8044,6 +8044,10 @@ LGraphNode.prototype.executeAction = function(action)
                         this.node_dragged.pos[0] = this.graph_mouse[0] - 5;
                         this.node_dragged.pos[1] = this.graph_mouse[1] - 5;
                         this.graph.afterChange();
+
+                        if(this.graph.onInputNodeCreated){
+                            this.graph.onInputNodeCreated(newnode)
+                        }
                     } else
                         console.error("graph input node not found:", type);
                 }
@@ -12594,6 +12598,8 @@ LGraphNode.prototype.executeAction = function(action)
             elem.querySelector(".name").value = "";
             elem.querySelector(".type").value = "";
             inner_refresh();
+
+            node.setDirtyCanvas(true, true);
         });
 
         inner_refresh();
@@ -14683,7 +14689,8 @@ if (typeof exports != "undefined") {
             this.properties.value,
             function(v) {
                 that.setProperty("value",v);
-            }
+            },
+            "value"
         );
 
         this.widgets_up = true;
@@ -14795,9 +14802,13 @@ if (typeof exports != "undefined") {
         this.setOutputData(0, data.value !== undefined ? data.value : this.properties.value );
     };
 
-    GraphInput.prototype.onRemoved = function() {
-        if (this.name_in_graph) {
-            this.graph.removeInput(this.name_in_graph);
+    GraphInput.prototype.onRemoved = function() { // There might be multiple GraphInput nodes, removing the input node doesn't mean we need to remove the Graph input.
+        // if (this.name_in_graph) {
+        //     this.graph.removeInput(this.name_in_graph);
+        // }
+
+        if(this.graph && this.graph.onInputNodeRemoved){
+            this.graph.onInputNodeRemoved()
         }
     };
 
