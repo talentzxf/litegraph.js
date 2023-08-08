@@ -2723,10 +2723,12 @@
             return;
         var prev_value = this.properties[name];
         this.properties[name] = value;
+        
         if (this.onPropertyChanged) {
             if (this.onPropertyChanged(name, value, prev_value) === false) //abort change
                 this.properties[name] = prev_value;
-        }
+        }            
+
         if (this.widgets) //widgets could be linked to properties
             for (var i = 0; i < this.widgets.length; ++i) {
                 var w = this.widgets[i];
@@ -2830,8 +2832,12 @@
             return null;
         }
 
-        if (!force_update) {
-            return link.data;
+        // if (!force_update) {
+        //     return link.data;
+        // }
+
+        if(link.data != null ){
+            return link.data
         }
 
         //special case: used to extract data from the incoming connection before the graph has been executed
@@ -17170,9 +17176,10 @@ if (typeof exports != "undefined") {
 
     Math3DVec2Normalize.prototype.onExecute = function () {
         var v = this.getInputData(0);
-        if (v == null) {
-            return;
+        if(v == null){
+            return null
         }
+
         var dist = Math.sqrt(v.x * v.x + v.y * v.y);
         this.setOutputData(0, {
             x: v.x / dist,

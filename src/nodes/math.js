@@ -1236,9 +1236,10 @@
 
     Math3DVec2Normalize.prototype.onExecute = function () {
         var v = this.getInputData(0);
-        if (v == null) {
+        if(v == null){
             return;
         }
+
         var dist = Math.sqrt(v.x * v.x + v.y * v.y);
         this.setOutputData(0, {
             x: v.x / dist,

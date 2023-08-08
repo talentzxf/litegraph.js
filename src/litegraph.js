@@ -2832,8 +2832,12 @@
             return null;
         }
 
-        if (!force_update) {
-            return link.data;
+        // if (!force_update) {
+        //     return link.data;
+        // }
+
+        if(link.data != null ){
+            return link.data
         }
 
         //special case: used to extract data from the incoming connection before the graph has been executed
