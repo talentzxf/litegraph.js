@@ -1180,6 +1180,7 @@ export declare class LGraphCanvas {
     fps: number;
     frame: number;
     graph: LGraph;
+    title_texts: object;
     highlighted_links: Record<number, boolean>;
     highquality_render: boolean;
     inner_text_font: string;

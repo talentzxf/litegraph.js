@@ -5332,6 +5332,10 @@ LGraphNode.prototype.executeAction = function(action)
         }
 
         this.autoresize = options.autoresize;
+
+        this.title_texts = {
+            "GraphInputs": "Graph Inputs"
+        }
     }
 
     global.LGraphCanvas = LiteGraph.LGraphCanvas = LGraphCanvas;
@@ -8020,7 +8024,7 @@ LGraphNode.prototype.executeAction = function(action)
         ctx.fillStyle = "#888";
         ctx.font = "14px Arial";
         ctx.textAlign = "left";
-        ctx.fillText("Graph Inputs", 20, 34);
+        ctx.fillText(this.title_texts.GraphInputs, 20, 34);
         // var pos = this.mouse;
 
         if (this.drawButton(w - 20, 20, 20, 20, "X", "#151515")) {
@@ -17177,7 +17181,7 @@ if (typeof exports != "undefined") {
     Math3DVec2Normalize.prototype.onExecute = function () {
         var v = this.getInputData(0);
         if(v == null){
-            return null
+            return;
         }
 
         var dist = Math.sqrt(v.x * v.x + v.y * v.y);
