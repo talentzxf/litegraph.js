@@ -2836,7 +2836,7 @@
         //     return link.data;
         // }
 
-        if(link.data != null ){
+        if(!force_update && link.data != null ){
             return link.data
         }
 
