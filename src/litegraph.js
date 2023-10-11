@@ -272,7 +272,7 @@
         unregisterNodeType: function (type) {
             var base_class = type.constructor === String ? this.registered_node_types[type] : type;
             if (!base_class)
-                throw("node type not found: " + type);
+                throw ("node type not found: " + type);
             delete this.registered_node_types[base_class.type];
             if (base_class.constructor.name)
                 delete this.Nodes[base_class.constructor.name];
@@ -1766,8 +1766,7 @@
         //     return;
         // }
 
-        if(name == "length" || name == "getLength")
-        {
+        if (name == "length" || name == "getLength") {
             console.log("Can't use preserved key words, change the property to another name")
             return;
         }
@@ -1775,9 +1774,9 @@
         this.beforeChange();
 
         let currentInputCount = this.inputs.length
-        if(this.inputs.hasOwnProperty(name)){
+        if (this.inputs.hasOwnProperty(name)) {
             this.inputs[name] = {name: name, type: type, value: value, index: currentInputCount - 1}; // Update of current input. Index won't change.
-        }else{
+        } else {
             this.inputs[name] = {name: name, type: type, value: value, index: currentInputCount};
 
             if (this.onInputAdded) {
@@ -2206,9 +2205,9 @@
             this.clear();
         }
 
-        if(data.inputs){
-            for(let inputEntry of Object.entries(data.inputs)){
-                if(inputEntry[0] == "length")
+        if (data.inputs) {
+            for (let inputEntry of Object.entries(data.inputs)) {
+                if (inputEntry[0] == "length")
                     continue
 
                 this.addInput(inputEntry[1].name, inputEntry[1].type, inputEntry[1].value)
@@ -2723,11 +2722,11 @@
             return;
         var prev_value = this.properties[name];
         this.properties[name] = value;
-        
+
         if (this.onPropertyChanged) {
             if (this.onPropertyChanged(name, value, prev_value) === false) //abort change
                 this.properties[name] = prev_value;
-        }            
+        }
 
         if (this.widgets) //widgets could be linked to properties
             for (var i = 0; i < this.widgets.length; ++i) {
@@ -2836,7 +2835,7 @@
         //     return link.data;
         // }
 
-        if(!force_update && link.data != null ){
+        if (!force_update && link.data != null) {
             return link.data
         }
 
@@ -5214,6 +5213,8 @@ LGraphNode.prototype.executeAction = function(action)
      * @param {Object} options [optional] { skip_rendering, autoresize, viewport }
      */
     function LGraphCanvas(canvas, graph, options) {
+        this.slot_types_default_out = []
+        this.slot_types_default_in = []
         this.options = options = options || {};
 
         //if(graph === undefined)
@@ -8058,7 +8059,7 @@ LGraphNode.prototype.executeAction = function(action)
                         newnode.setProperty("name", input.name);
                         newnode.setProperty("type", input.type);
 
-                        if(this.graph.getInputValueFunction){
+                        if (this.graph.getInputValueFunction) {
                             let value = this.graph.getInputValueFunction(input.name)
                             newnode.setProperty("value", value)
                         }
@@ -8067,7 +8068,7 @@ LGraphNode.prototype.executeAction = function(action)
                         this.node_dragged.pos[1] = this.graph_mouse[1] - 5;
                         this.graph.afterChange();
 
-                        if(this.graph.onInputNodeCreated){
+                        if (this.graph.onInputNodeCreated) {
                             this.graph.onInputNodeCreated(newnode)
                         }
                     } else
@@ -10997,6 +10998,7 @@ LGraphNode.prototype.executeAction = function(action)
         // get defaults nodes for this slottype
         var fromSlotType = slotX.type == LiteGraph.EVENT ? "_event_" : slotX.type;
         var slotTypesDefault = isFrom ? LiteGraph.slot_types_default_out : LiteGraph.slot_types_default_in;
+
         if (slotTypesDefault && slotTypesDefault[fromSlotType]) {
             if (typeof slotTypesDefault[fromSlotType] == "object" || typeof slotTypesDefault[fromSlotType] == "array") {
                 for (var typeX in slotTypesDefault[fromSlotType]) {
@@ -11007,11 +11009,29 @@ LGraphNode.prototype.executeAction = function(action)
             }
         }
 
+        var canvasSlotTypesDefault = isFrom ? this.slot_types_default_out : this.slot_types_default_in;
+        if (canvasSlotTypesDefault && canvasSlotTypesDefault[fromSlotType]) {
+            if (typeof canvasSlotTypesDefault[fromSlotType] == "object" || typeof canvasSlotTypesDefault[fromSlotType] == "array") {
+                for (var typeX in canvasSlotTypesDefault[fromSlotType]) {
+                    options.push(canvasSlotTypesDefault[fromSlotType][typeX]);
+                }
+            } else {
+                options.push(canvasSlotTypesDefault[fromSlotType]);
+            }
+        }
+
         // build menu
         var menu = new LiteGraph.ContextMenu(options, {
             event: opts.e,
             title: (slotX && slotX.name != "" ? (slotX.name + (fromSlotType ? " | " : "")) : "") + (slotX && fromSlotType ? fromSlotType : ""),
-            callback: inner_clicked
+            callback: inner_clicked,
+            extra: {
+                nodeFrom: opts.nodeFrom,
+                nodeTo: opts.nodeTo,
+                isFrom: isFrom,
+                iSlotConn: iSlotConn,
+                fromSlotType: fromSlotType
+            }
         });
 
         // callback
@@ -12580,7 +12600,7 @@ LGraphNode.prototype.executeAction = function(action)
                 if (nodeIsGraph(node)) {
                     let propertyDescriptors = Object.getOwnPropertyDescriptors(node.inputs)
                     for (let propertyDescriptorKey of Object.keys(propertyDescriptors)) {
-                        if(propertyDescriptorKey == "length")
+                        if (propertyDescriptorKey == "length")
                             continue;
 
                         let inputPropertyDescriptor = propertyDescriptors[propertyDescriptorKey]
