@@ -18,6 +18,7 @@ module.exports = function (grunt) {
     huaHuoProjectFiles: ['src/litegraph.js',
       'src/huahuo_nodes/base.js',
       'src/huahuo_nodes/math.js',
+      'src/huahuo_nodes/math3d.js',
       'src/huahuo_nodes/strings.js',
       'src/huahuo_nodes/others.js',
       'src/huahuo_nodes/advanced.js',
