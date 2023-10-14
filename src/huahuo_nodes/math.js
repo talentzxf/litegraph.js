@@ -1,97 +1,98 @@
 (function (global) {
     var LiteGraph = global.LiteGraph;
 
-    //Converter
-    function Converter() {
-        this.addInput("in", 0);
-        this.addOutput("out", 0);
-        this.size = [80, 30];
-    }
+    // This is Confusing, might add later but not now.
+    // //Converter
+    // function Converter() {
+    //     this.addInput("in", 0);
+    //     this.addOutput("out", 0);
+    //     this.size = [80, 30];
+    // }
+    //
+    // Converter.title = "Converter";
+    // Converter.desc = "type A to type B";
+    //
+    // Converter.prototype.onExecute = function () {
+    //     var v = this.getInputData(0);
+    //     if (v == null) {
+    //         return;
+    //     }
+    //
+    //     if (this.outputs) {
+    //         for (var i = 0; i < this.outputs.length; i++) {
+    //             var output = this.outputs[i];
+    //             if (!output.links || !output.links.length) {
+    //                 continue;
+    //             }
+    //
+    //             var result = null;
+    //             switch (output.name) {
+    //                 case "number":
+    //                     result = v.length ? v[0] : parseFloat(v);
+    //                     break;
+    //                 case "vec2":
+    //                 case "vec3":
+    //                 case "vec4":
+    //                     var result = null;
+    //                     var count = 1;
+    //                     switch (output.name) {
+    //                         case "vec2":
+    //                             count = 2;
+    //                             break;
+    //                         case "vec3":
+    //                             count = 3;
+    //                             break;
+    //                         case "vec4":
+    //                             count = 4;
+    //                             break;
+    //                     }
+    //
+    //                     var result = new Float32Array(count);
+    //                     if (v.length) {
+    //                         for (
+    //                             var j = 0;
+    //                             j < v.length && j < result.length;
+    //                             j++
+    //                         ) {
+    //                             result[j] = v[j];
+    //                         }
+    //                     } else {
+    //                         result[0] = parseFloat(v);
+    //                     }
+    //                     break;
+    //             }
+    //             this.setOutputData(i, result);
+    //         }
+    //     }
+    // };
+    //
+    // Converter.prototype.onGetOutputs = function () {
+    //     return [
+    //         ["number", "number"],
+    //         ["vec2", "vec2"],
+    //         ["vec3", "vec3"],
+    //         ["vec4", "vec4"]
+    //     ];
+    // };
+    //
+    // LiteGraph.registerNodeType("math/converter", Converter);
 
-    Converter.title = "Converter";
-    Converter.desc = "type A to type B";
-
-    Converter.prototype.onExecute = function () {
-        var v = this.getInputData(0);
-        if (v == null) {
-            return;
-        }
-
-        if (this.outputs) {
-            for (var i = 0; i < this.outputs.length; i++) {
-                var output = this.outputs[i];
-                if (!output.links || !output.links.length) {
-                    continue;
-                }
-
-                var result = null;
-                switch (output.name) {
-                    case "number":
-                        result = v.length ? v[0] : parseFloat(v);
-                        break;
-                    case "vec2":
-                    case "vec3":
-                    case "vec4":
-                        var result = null;
-                        var count = 1;
-                        switch (output.name) {
-                            case "vec2":
-                                count = 2;
-                                break;
-                            case "vec3":
-                                count = 3;
-                                break;
-                            case "vec4":
-                                count = 4;
-                                break;
-                        }
-
-                        var result = new Float32Array(count);
-                        if (v.length) {
-                            for (
-                                var j = 0;
-                                j < v.length && j < result.length;
-                                j++
-                            ) {
-                                result[j] = v[j];
-                            }
-                        } else {
-                            result[0] = parseFloat(v);
-                        }
-                        break;
-                }
-                this.setOutputData(i, result);
-            }
-        }
-    };
-
-    Converter.prototype.onGetOutputs = function () {
-        return [
-            ["number", "number"],
-            ["vec2", "vec2"],
-            ["vec3", "vec3"],
-            ["vec4", "vec4"]
-        ];
-    };
-
-    LiteGraph.registerNodeType("math/converter", Converter);
-
-    //Bypass
-    function Bypass() {
-        this.addInput("in");
-        this.addOutput("out");
-        this.size = [80, 30];
-    }
-
-    Bypass.title = "Bypass";
-    Bypass.desc = "removes the type";
-
-    Bypass.prototype.onExecute = function () {
-        var v = this.getInputData(0);
-        this.setOutputData(0, v);
-    };
-
-    LiteGraph.registerNodeType("math/bypass", Bypass);
+    // //Bypass
+    // function Bypass() {
+    //     this.addInput("in");
+    //     this.addOutput("out");
+    //     this.size = [80, 30];
+    // }
+    //
+    // Bypass.title = "Bypass";
+    // Bypass.desc = "removes the type";
+    //
+    // Bypass.prototype.onExecute = function () {
+    //     var v = this.getInputData(0);
+    //     this.setOutputData(0, v);
+    // };
+    //
+    // LiteGraph.registerNodeType("math/bypass", Bypass);
 
     function ToNumber() {
         this.addInput("in");
