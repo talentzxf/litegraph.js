@@ -697,6 +697,4 @@
 
     LiteGraph.GraphOutput = GraphOutput;
     LiteGraph.registerNodeType("graph/output", GraphOutput);
-
-
-})(this)
+})(this);

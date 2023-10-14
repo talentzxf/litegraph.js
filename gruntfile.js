@@ -17,11 +17,11 @@ module.exports = function (grunt) {
     ],
     huaHuoProjectFiles: ['src/litegraph.js',
       'src/huahuo_nodes/base.js',
-      'src/huahuo_nodes/advanced.js',
       'src/huahuo_nodes/math.js',
-      'src/huahuo_nodes/graph.js',
       'src/huahuo_nodes/strings.js',
-      'src/huahuo_nodes/others.js'
+      'src/huahuo_nodes/others.js',
+      'src/huahuo_nodes/advanced.js',
+      'src/huahuo_nodes/graph.js',
     ],
     concat: {
       build: {

@@ -238,8 +238,4 @@
     };
 
     LiteGraph.registerNodeType("basic/alert", Alert);
-
-
-
-
 })(this);
