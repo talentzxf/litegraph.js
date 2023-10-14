@@ -1,4 +1,4 @@
-(function(global){
+(function(global) {
     var LiteGraph = global.LiteGraph;
 
     function ConstantObject() {
@@ -14,46 +14,45 @@
         this.setOutputData(0, this._object);
     };
 
-    LiteGraph.registerNodeType( "advanced/object", ConstantObject );
+    LiteGraph.registerNodeType("advanced/object", ConstantObject);
 
     function ConstantFile() {
         this.addInput("url", "string");
         this.addOutput("file", "string");
         this.addProperty("url", "");
         this.addProperty("type", "text");
-        this.widget = this.addWidget("text","url","","url");
+        this.widget = this.addWidget("text", "url", "", "url");
         this._data = null;
     }
 
     ConstantFile.title = "Const File";
     ConstantFile.desc = "Fetches a file from an url";
-    ConstantFile["@type"] = { type: "enum", values: ["text","arraybuffer","blob","json"] };
+    ConstantFile["@type"] = { type: "enum", values: ["text", "arraybuffer", "blob", "json"] };
 
     ConstantFile.prototype.onPropertyChanged = function(name, value) {
-        if (name == "url")
-        {
-            if( value == null || value == "")
+        if (name == "url") {
+            if (value == null || value == "")
                 this._data = null;
-            else
-            {
+            else {
                 this.fetchFile(value);
             }
         }
-    }
+    };
 
     ConstantFile.prototype.onExecute = function() {
         var url = this.getInputData(0) || this.properties.url;
-        if(url && (url != this._url || this._type != this.properties.type))
+        if (url && (url != this._url || this._type != this.properties.type))
             this.fetchFile(url);
-        this.setOutputData(0, this._data );
+        this.setOutputData(0, this._data);
     };
 
-    ConstantFile.prototype.setValue = ConstantNumber.prototype.setValue;
+    ConstantFile.prototype.setValue = function(v) {
+        this.setProperty("value", v);
+    };
 
     ConstantFile.prototype.fetchFile = function(url) {
         var that = this;
-        if(!url || url.constructor !== String)
-        {
+        if (!url || url.constructor !== String) {
             that._data = null;
             that.boxcolor = null;
             return;
@@ -66,16 +65,16 @@
         }
         fetch(url)
             .then(function(response) {
-                if(!response.ok)
+                if (!response.ok)
                     throw new Error("File not found");
 
-                if(that.properties.type == "arraybuffer")
+                if (that.properties.type == "arraybuffer")
                     return response.arrayBuffer();
-                else if(that.properties.type == "text")
+                else if (that.properties.type == "text")
                     return response.text();
-                else if(that.properties.type == "json")
+                else if (that.properties.type == "json")
                     return response.json();
-                else if(that.properties.type == "blob")
+                else if (that.properties.type == "blob")
                     return response.blob();
             })
             .then(function(data) {
@@ -85,32 +84,30 @@
             .catch(function(error) {
                 that._data = null;
                 that.boxcolor = "red";
-                console.error("error fetching file:",url);
+                console.error("error fetching file:", url);
             });
     };
 
-    ConstantFile.prototype.onDropFile = function(file)
-    {
+    ConstantFile.prototype.onDropFile = function(file) {
         var that = this;
         this._url = file.name;
         this._type = this.properties.type;
         this.properties.url = file.name;
         var reader = new FileReader();
-        reader.onload = function(e)
-        {
+        reader.onload = function(e) {
             that.boxcolor = "#AEA";
             var v = e.target.result;
-            if( that.properties.type == "json" )
+            if (that.properties.type == "json")
                 v = JSON.parse(v);
             that._data = v;
-        }
-        if(that.properties.type == "arraybuffer")
+        };
+        if (that.properties.type == "arraybuffer")
             reader.readAsArrayBuffer(file);
-        else if(that.properties.type == "text" || that.properties.type == "json")
+        else if (that.properties.type == "text" || that.properties.type == "json")
             reader.readAsText(file);
-        else if(that.properties.type == "blob")
+        else if (that.properties.type == "blob")
             return reader.readAsBinaryString(file);
-    }
+    };
 
     LiteGraph.registerNodeType("advanced/file", ConstantFile);
 
@@ -118,7 +115,7 @@
     function ConstantData() {
         this.addOutput("data", "object");
         this.addProperty("value", "");
-        this.widget = this.addWidget("text","json","","value");
+        this.widget = this.addWidget("text", "json", "", "value");
         this.widgets_up = true;
         this.size = [140, 30];
         this._value = null;
@@ -145,7 +142,10 @@
         this.setOutputData(0, this._value);
     };
 
-    ConstantData.prototype.setValue = ConstantNumber.prototype.setValue;
+    ConstantData.prototype.setValue = function(v)
+    {
+        this.setProperty("value",v);
+    }
 
     LiteGraph.registerNodeType("advanced/data", ConstantData);
 
@@ -156,7 +156,7 @@
         this.addOutput("arrayOut", "array");
         this.addOutput("length", "number");
         this.addProperty("value", "[]");
-        this.widget = this.addWidget("text","array",this.properties.value,"value");
+        this.widget = this.addWidget("text", "array", this.properties.value, "value");
         this.widgets_up = true;
         this.size = [140, 50];
     }
@@ -171,7 +171,7 @@
         }
 
         try {
-            if(value[0] != "[")
+            if (value[0] != "[")
                 this._value = JSON.parse("[" + value + "]");
             else
                 this._value = JSON.parse(value);
@@ -183,29 +183,31 @@
 
     ConstantArray.prototype.onExecute = function() {
         var v = this.getInputData(0);
-        if(v && v.length) //clone
+        if (v && v.length) //clone
         {
-            if(!this._value)
+            if (!this._value)
                 this._value = new Array();
             this._value.length = v.length;
-            for(var i = 0; i < v.length; ++i)
+            for (var i = 0; i < v.length; ++i)
                 this._value[i] = v[i];
         }
         this.setOutputData(0, this._value);
-        this.setOutputData(1, this._value ? ( this._value.length || 0) : 0 );
+        this.setOutputData(1, this._value ? (this._value.length || 0) : 0);
     };
 
-    ConstantArray.prototype.setValue = ConstantNumber.prototype.setValue;
+    ConstantArray.prototype.setValue = function(v)
+    {
+        this.setProperty("value",v);
+    }
 
     LiteGraph.registerNodeType("advanced/array", ConstantArray);
 
-    function SetArray()
-    {
+    function SetArray() {
         this.addInput("arr", "array");
         this.addInput("value", "");
         this.addOutput("arr", "array");
         this.properties = { index: 0 };
-        this.widget = this.addWidget("number","i",this.properties.index,"index",{precision: 0, step: 10, min: 0});
+        this.widget = this.addWidget("number", "i", this.properties.index, "index", { precision: 0, step: 10, min: 0 });
     }
 
     SetArray.title = "Set Array";
@@ -213,23 +215,23 @@
 
     SetArray.prototype.onExecute = function() {
         var arr = this.getInputData(0);
-        if(!arr)
+        if (!arr)
             return;
         var v = this.getInputData(1);
-        if(v === undefined )
+        if (v === undefined)
             return;
-        if(this.properties.index)
-            arr[ Math.floor(this.properties.index) ] = v;
-        this.setOutputData(0,arr);
+        if (this.properties.index)
+            arr[Math.floor(this.properties.index)] = v;
+        this.setOutputData(0, arr);
     };
 
-    LiteGraph.registerNodeType("advanced/set_array", SetArray );
+    LiteGraph.registerNodeType("advanced/set_array", SetArray);
 
     function ArrayElement() {
         this.addInput("array", "array,table,string");
         this.addInput("index", "number");
         this.addOutput("value", "");
-        this.addProperty("index",0);
+        this.addProperty("index", 0);
     }
 
     ArrayElement.title = "Array[i]";
@@ -238,11 +240,11 @@
     ArrayElement.prototype.onExecute = function() {
         var array = this.getInputData(0);
         var index = this.getInputData(1);
-        if(index == null)
+        if (index == null)
             index = this.properties.index;
-        if(array == null || index == null )
+        if (array == null || index == null)
             return;
-        this.setOutputData(0, array[Math.floor(Number(index))] );
+        this.setOutputData(0, array[Math.floor(Number(index))]);
     };
 
     LiteGraph.registerNodeType("advanced/array[]", ArrayElement);
@@ -252,8 +254,8 @@
         this.addInput("row", "number");
         this.addInput("col", "number");
         this.addOutput("value", "");
-        this.addProperty("row",0);
-        this.addProperty("column",0);
+        this.addProperty("row", 0);
+        this.addProperty("column", 0);
     }
 
     TableElement.title = "Table[row][col]";
@@ -263,17 +265,17 @@
         var table = this.getInputData(0);
         var row = this.getInputData(1);
         var col = this.getInputData(2);
-        if(row == null)
+        if (row == null)
             row = this.properties.row;
-        if(col == null)
+        if (col == null)
             col = this.properties.column;
-        if(table == null || row == null || col == null)
+        if (table == null || row == null || col == null)
             return;
         var row = table[Math.floor(Number(row))];
-        if(row)
-            this.setOutputData(0, row[Math.floor(Number(col))] );
+        if (row)
+            this.setOutputData(0, row[Math.floor(Number(col))]);
         else
-            this.setOutputData(0, null );
+            this.setOutputData(0, null);
     };
 
     LiteGraph.registerNodeType("advanced/table[][]", TableElement);
@@ -282,7 +284,7 @@
         this.addInput("obj", "object");
         this.addOutput("property", 0);
         this.addProperty("value", 0);
-        this.widget = this.addWidget("text","prop.","",this.setValue.bind(this) );
+        this.widget = this.addWidget("text", "prop.", "", this.setValue.bind(this));
         this.widgets_up = true;
         this.size = [140, 30];
         this._value = null;
@@ -328,20 +330,19 @@
     ObjectKeys.prototype.onExecute = function() {
         var data = this.getInputData(0);
         if (data != null) {
-            this.setOutputData(0, Object.keys(data) );
+            this.setOutputData(0, Object.keys(data));
         }
     };
 
     LiteGraph.registerNodeType("advanced/object_keys", ObjectKeys);
 
 
-    function SetObject()
-    {
+    function SetObject() {
         this.addInput("obj", "");
         this.addInput("value", "");
         this.addOutput("obj", "");
         this.properties = { property: "" };
-        this.name_widget = this.addWidget("text","prop.",this.properties.property,"property");
+        this.name_widget = this.addWidget("text", "prop.", this.properties.property, "property");
     }
 
     SetObject.title = "Set Object";
@@ -349,17 +350,17 @@
 
     SetObject.prototype.onExecute = function() {
         var obj = this.getInputData(0);
-        if(!obj)
+        if (!obj)
             return;
         var v = this.getInputData(1);
-        if(v === undefined )
+        if (v === undefined)
             return;
-        if(this.properties.property)
-            obj[ this.properties.property ] = v;
-        this.setOutputData(0,obj);
+        if (this.properties.property)
+            obj[this.properties.property] = v;
+        this.setOutputData(0, obj);
     };
 
-    LiteGraph.registerNodeType("advanced/set_object", SetObject );
+    LiteGraph.registerNodeType("advanced/set_object", SetObject);
 
 
     function MergeObjects() {
@@ -368,7 +369,7 @@
         this.addOutput("out", "object");
         this._result = {};
         var that = this;
-        this.addWidget("button","clear","",function(){
+        this.addWidget("button", "clear", "", function() {
             that._result = {};
         });
         this.size = this.computeSize();
@@ -381,16 +382,16 @@
         var A = this.getInputData(0);
         var B = this.getInputData(1);
         var C = this._result;
-        if(A)
-            for(var i in A)
+        if (A)
+            for (var i in A)
                 C[i] = A[i];
-        if(B)
-            for(var i in B)
+        if (B)
+            for (var i in B)
                 C[i] = B[i];
-        this.setOutputData(0,C);
+        this.setOutputData(0, C);
     };
 
-    LiteGraph.registerNodeType("advanced/merge_objects", MergeObjects );
+    LiteGraph.registerNodeType("advanced/merge_objects", MergeObjects);
 
     //Store as variable
     function Variable() {
@@ -408,28 +409,28 @@
     Variable.GRAPH = 1;	//only inside this graph
     Variable.GLOBALSCOPE = 2;	//attached to Window
 
-    Variable["@container"] = { type: "enum", values: {"litegraph":Variable.LITEGRAPH, "graph":Variable.GRAPH,"global": Variable.GLOBALSCOPE} };
+    Variable["@container"] = {
+        type: "enum",
+        values: { "litegraph": Variable.LITEGRAPH, "graph": Variable.GRAPH, "global": Variable.GLOBALSCOPE }
+    };
 
     Variable.prototype.onExecute = function() {
         var container = this.getContainer();
 
-        if(this.isInputConnected(0))
-        {
+        if (this.isInputConnected(0)) {
             this.value = this.getInputData(0);
-            container[ this.properties.varname ] = this.value;
-            this.setOutputData(0, this.value );
+            container[this.properties.varname] = this.value;
+            this.setOutputData(0, this.value);
             return;
         }
 
-        this.setOutputData( 0, container[ this.properties.varname ] );
+        this.setOutputData(0, container[this.properties.varname]);
     };
 
-    Variable.prototype.getContainer = function()
-    {
-        switch(this.properties.container)
-        {
+    Variable.prototype.getContainer = function() {
+        switch (this.properties.container) {
             case Variable.GRAPH:
-                if(this.graph)
+                if (this.graph)
                     return this.graph.vars;
                 return {};
                 break;
@@ -441,7 +442,7 @@
                 return LiteGraph.Globals;
                 break;
         }
-    }
+    };
 
     Variable.prototype.getTitle = function() {
         return this.properties.varname;
@@ -450,7 +451,7 @@
     LiteGraph.registerNodeType("advanced/variable", Variable);
 
     function length(v) {
-        if(v && v.length != null)
+        if (v && v.length != null)
             return Number(v.length);
         return 0;
     }
@@ -463,27 +464,29 @@
     );
 
     function length(v) {
-        if(v && v.length != null)
+        if (v && v.length != null)
             return Number(v.length);
         return 0;
     }
 
     LiteGraph.wrapFunctionAsNode(
         "advanced/not",
-        function(a){ return !a; },
+        function(a) {
+            return !a;
+        },
         [""],
         "boolean"
     );
 
     function DownloadData() {
         this.size = [60, 30];
-        this.addInput("data", 0 );
-        this.addInput("download", LiteGraph.ACTION );
+        this.addInput("data", 0);
+        this.addInput("download", LiteGraph.ACTION);
         this.properties = { filename: "data.json" };
         this.value = null;
         var that = this;
-        this.addWidget("button","Download","", function(v){
-            if(!that.value)
+        this.addWidget("button", "Download", "", function(v) {
+            if (!that.value)
                 return;
             that.downloadAsFile();
         });
@@ -492,33 +495,36 @@
     DownloadData.title = "Download";
     DownloadData.desc = "Download some data";
 
-    DownloadData.prototype.downloadAsFile = function()
-    {
-        if(this.value == null)
+    DownloadData.prototype.downloadAsFile = function() {
+        if (this.value == null)
             return;
 
         var str = null;
-        if(this.value.constructor === String)
+        if (this.value.constructor === String)
             str = this.value;
         else
             str = JSON.stringify(this.value);
 
         var file = new Blob([str]);
-        var url = URL.createObjectURL( file );
+        var url = URL.createObjectURL(file);
         var element = document.createElement("a");
-        element.setAttribute('href', url);
-        element.setAttribute('download', this.properties.filename );
-        element.style.display = 'none';
+        element.setAttribute("href", url);
+        element.setAttribute("download", this.properties.filename);
+        element.style.display = "none";
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
-        setTimeout( function(){ URL.revokeObjectURL( url ); }, 1000*60 ); //wait one minute to revoke url
-    }
+        setTimeout(function() {
+            URL.revokeObjectURL(url);
+        }, 1000 * 60); //wait one minute to revoke url
+    };
 
     DownloadData.prototype.onAction = function(action, param) {
         var that = this;
-        setTimeout( function(){ that.downloadAsFile(); }, 100); //deferred to avoid blocking the renderer with the popup
-    }
+        setTimeout(function() {
+            that.downloadAsFile();
+        }, 100); //deferred to avoid blocking the renderer with the popup
+    };
 
     DownloadData.prototype.onExecute = function() {
         if (this.inputs[0]) {
@@ -645,7 +651,7 @@
         this.addProperty("A", 1);
         this.addProperty("B", 1);
         this.addProperty("OP", "==", "enum", { values: GenericCompare.values });
-        this.addWidget("combo","Op.",this.properties.OP,{ property: "OP", values: GenericCompare.values } );
+        this.addWidget("combo", "Op.", this.properties.OP, { property: "OP", values: GenericCompare.values });
 
         this.size = [80, 60];
     }
@@ -680,17 +686,17 @@
         }
 
         var result = false;
-        if (typeof A == typeof B){
+        if (typeof A == typeof B) {
             switch (this.properties.OP) {
                 case "==":
                 case "!=":
                     // traverse both objects.. consider that this is not a true deep check! consider underscore or other library for thath :: _isEqual()
                     result = true;
-                    switch(typeof A){
+                    switch (typeof A) {
                         case "object":
                             var aProps = Object.getOwnPropertyNames(A);
                             var bProps = Object.getOwnPropertyNames(B);
-                            if (aProps.length != bProps.length){
+                            if (aProps.length != bProps.length) {
                                 result = false;
                                 break;
                             }
@@ -733,4 +739,4 @@
 
     LiteGraph.registerNodeType("advanced/CompareValues", GenericCompare);
 
-})(this)
+})(this);

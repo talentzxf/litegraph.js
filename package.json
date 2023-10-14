@@ -42,5 +42,14 @@
         "grunt-contrib-concat": "^1.0.1",
         "nodemon": "^1.19.4",
         "rimraf": "^2.7.1"
+    },
+    "dependencies": {
+        "extend": "^3.0.2",
+        "fined": "^2.0.0",
+        "flagged-respawn": "^2.0.0",
+        "object.map": "^1.0.1",
+        "rechoir": "^0.8.0",
+        "resolve": "^1.22.8",
+        "supports-color": "^8.1.1"
     }
 }
