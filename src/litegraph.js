@@ -12263,6 +12263,8 @@ LGraphNode.prototype.executeAction = function(action)
                         return false;
                     }
                 });
+            } else if(type == "array") {
+                
             }
 
             root.content.appendChild(elem);
