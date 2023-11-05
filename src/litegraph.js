@@ -12430,7 +12430,7 @@ LGraphNode.prototype.executeAction = function(action)
             panel.content.innerHTML = ""; //clear
             panel.addHTML("<span class='node_type'>" + node.type + "</span><span class='node_desc'>" + (node.constructor.desc || "") + "</span><span class='separator'></span>");
 
-            panel.addHTML("<h3>Properties</h3>");
+            panel.addHTML("<span>Properties</span>");
 
             var fUpdate = function (name, value) {
                 graphcanvas.graph.beforeChange(node);
