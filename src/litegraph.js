@@ -12284,16 +12284,19 @@ LGraphNode.prototype.executeAction = function(action)
                         elem.appendChild(arrayEditor);
                     }
 
-                    arrayEditor.innerHTML = "<span>Array Values</span>";
-
+                    arrayEditor.innerHTML = "<span>Array Values</span>"
                     for (let val of value) {
                         let childValSpan = document.createElement("span");
                         childValSpan.innerText = val;
                         arrayEditor.appendChild(childValueSpan);
                     }
 
-                    let newValueInput = document.createElement("input");
-                    arrayEditor.appendChild(newValueInput);
+                    let newValueInputDiv = document.createElement("div")
+                    newValueInputDiv.style.display = "flex"
+                    newValueInputDiv.innerHTML = "<input></input><button>OK</button>"
+
+                    let newValueInput = newValueInputDiv.querySelector("input")
+                    arrayEditor.appendChild(newValueInputDiv);
 
                     if (arrayEditorIsVisible) {
                         arrayEditor.style.display = "none";
