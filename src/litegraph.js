@@ -12274,6 +12274,15 @@ LGraphNode.prototype.executeAction = function(action)
 
                 value_element.innerText = "Click to view array contents";
 
+                function innerRefreshData(parentDiv){
+                    parentDiv.innerHTML = ""
+                    for (let val of value) {
+                        let childValSpan = document.createElement("span");
+                        childValSpan.innerText = val;
+                        parentDiv.appendChild(childValSpan);
+                    }
+                }
+
                 let arrayEditorIsVisible = false;
                 let arrayEditor = null;
                 value_element.addEventListener("click", (e) => {
@@ -12285,17 +12294,27 @@ LGraphNode.prototype.executeAction = function(action)
                     }
 
                     arrayEditor.innerHTML = "<span>Array Values</span>"
-                    for (let val of value) {
-                        let childValSpan = document.createElement("span");
-                        childValSpan.innerText = val;
-                        arrayEditor.appendChild(childValueSpan);
-                    }
+
+                    let contentDiv = document.createElement("div")
+                    innerRefreshData(contentDiv)
+
+                    arrayEditor.appendChild(contentDiv)
 
                     let newValueInputDiv = document.createElement("div")
                     newValueInputDiv.style.display = "flex"
                     newValueInputDiv.innerHTML = "<input></input><button>OK</button>"
-
                     let newValueInput = newValueInputDiv.querySelector("input")
+
+                    let okButton = newValueInputDiv.querySelector("button")
+                    okButton.addEventListener("click", (e)=>{
+                        let newString = newValueInput.value
+                        value.push(newString)
+
+                        innerRefreshData(contentDiv)
+
+                        innerChange(propname, value)
+                    })
+
                     arrayEditor.appendChild(newValueInputDiv);
 
                     if (arrayEditorIsVisible) {
