@@ -12263,6 +12263,12 @@ LGraphNode.prototype.executeAction = function(action)
                         return false;
                     }
                 });
+            } else if(type == "array") {
+                elem.addEventListener("click", function(){
+                    let arrayEditor = document.createElement("div")
+                    arrayEditor.innerHTML = "This is array editor <button> Add new value </button>"
+                    elem.appendChild(arrayEditor)
+                })
             }
 
             root.content.appendChild(elem);
