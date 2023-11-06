@@ -12272,36 +12272,36 @@ LGraphNode.prototype.executeAction = function(action)
                     value = [];
                 }
 
-                let propname = elem.dataset["property"]
+                let propname = elem.dataset["property"];
 
-                let showValueBtnText = "Click to view array contents"
-                let hideValueBtnText = "Click to hide array contents"
+                let showValueBtnText = "Click to view array contents";
+                let hideValueBtnText = "Click to hide array contents";
 
                 value_element.innerHTML = "<button>" + showValueBtnText + "</button>";
-                let viewHideBtn = value_element.querySelector("button")
+                let viewHideBtn = value_element.querySelector("button");
 
-                function innerRefreshData(parentDiv){
-                    parentDiv.innerHTML = ""
-                    let id = 0
+                function innerRefreshData(parentDiv) {
+                    parentDiv.innerHTML = "";
+                    let id = 0;
                     for (let val of value) {
-                        let childElement = document.createElement("div")
+                        let childElement = document.createElement("div");
                         let childValSpan = document.createElement("span");
                         childValSpan.innerText = val;
-                        childValSpan.dataset["id"] = id
-                        let deleteBtn = document.createElement("button")
-                        deleteBtn.innerText = "Delete"
-                        deleteBtn.dataset["targetId"] = id
-                        deleteBtn.addEventListener("click", (e)=>{
-                            let targetId = e.target.dataset["targetId"]
-                            value.splice(targetId, 1)
+                        childValSpan.dataset["id"] = id;
+                        let deleteBtn = document.createElement("button");
+                        deleteBtn.innerText = "Delete";
+                        deleteBtn.dataset["targetId"] = id;
+                        deleteBtn.addEventListener("click", (e) => {
+                            let targetId = e.target.dataset["targetId"];
+                            value.splice(targetId, 1);
 
-                            innerRefreshData(parentDiv)
-                            innerChange(propname, value)
-                        })
+                            innerRefreshData(parentDiv);
+                            innerChange(propname, value);
+                        });
                         childElement.appendChild(childValSpan);
-                        childElement.appendChild(deleteBtn)
-                        parentDiv.appendChild(childElement)
-                        id++
+                        childElement.appendChild(deleteBtn);
+                        parentDiv.appendChild(childElement);
+                        id++;
                     }
                 }
 
@@ -12310,56 +12310,56 @@ LGraphNode.prototype.executeAction = function(action)
                 viewHideBtn.addEventListener("click", (e) => {
                     if (arrayEditor == null) {
                         arrayEditor = document.createElement("div");
-                        arrayEditor.style.display = "flex"
-                        arrayEditor.style.flexDirection = "column"
+                        arrayEditor.style.display = "flex";
+                        arrayEditor.style.flexDirection = "column";
                         value_element.appendChild(arrayEditor);
                     }
 
-                    arrayEditor.innerHTML = ""
+                    arrayEditor.innerHTML = "";
 
-                    let newValueInputDiv = document.createElement("div")
-                    newValueInputDiv.style.display = "flex"
-                    newValueInputDiv.innerHTML = "<input></input><button>OK</button>"
-                    let newValueInput = newValueInputDiv.querySelector("input")
+                    let newValueInputDiv = document.createElement("div");
+                    newValueInputDiv.style.display = "flex";
+                    newValueInputDiv.innerHTML = "<input></input><button>OK</button>";
+                    let newValueInput = newValueInputDiv.querySelector("input");
 
-                    let okButton = newValueInputDiv.querySelector("button")
-                    okButton.addEventListener("click", (e)=>{
-                        let newString = newValueInput.value
+                    let okButton = newValueInputDiv.querySelector("button");
+                    okButton.addEventListener("click", (e) => {
+                        let newString = newValueInput.value;
 
-                        if(options.hasOwnProperty("allowEmpty") && options.allowEmpty == false){
-                            if(newString.length == 0)
-                                return
+                        if (options.hasOwnProperty("allowEmpty") && options.allowEmpty == false) {
+                            if (newString.length == 0)
+                                return;
                         }
 
-                        if(options?.unique == true){
-                            for(let val of value){
-                                if(newString == val)
-                                    return
+                        if (options.hasOwnProperty("unique") && options["unique"] == true) {
+                            for (let val of value) {
+                                if (newString == val)
+                                    return;
                             }
                         }
 
-                        value.push(newString)
-                        newValueInput.value = ""
+                        value.push(newString);
+                        newValueInput.value = "";
 
-                        innerRefreshData(contentDiv)
+                        innerRefreshData(contentDiv);
 
-                        innerChange(propname, value)
-                    })
+                        innerChange(propname, value);
+                    });
 
-                    let contentDiv = document.createElement("div")
-                    contentDiv.style.display = "flex"
-                    contentDiv.style.flexDirection = "column"
+                    let contentDiv = document.createElement("div");
+                    contentDiv.style.display = "flex";
+                    contentDiv.style.flexDirection = "column";
 
-                    innerRefreshData(contentDiv)
+                    innerRefreshData(contentDiv);
                     arrayEditor.appendChild(newValueInputDiv);
-                    arrayEditor.appendChild(contentDiv)
+                    arrayEditor.appendChild(contentDiv);
 
                     if (arrayEditorIsVisible) {
                         arrayEditor.style.display = "none";
-                        viewHideBtn.innerText = showValueBtnText
+                        viewHideBtn.innerText = showValueBtnText;
                     } else {
                         arrayEditor.style.display = "flex";
-                        viewHideBtn.innerText = hideValueBtnText
+                        viewHideBtn.innerText = hideValueBtnText;
                     }
                     arrayEditorIsVisible = !arrayEditorIsVisible;
                 });
