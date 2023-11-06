@@ -12274,8 +12274,9 @@ LGraphNode.prototype.executeAction = function(action)
 
                 let propname = elem.dataset["property"];
 
-                let showValueBtnText = "Click to view array contents";
-                let hideValueBtnText = "Click to hide array contents";
+                let showValueBtnText = "View array contents";
+                let hideValueBtnText = "Hide array contents";
+                value_element.style.width = "calc( 100% - 182px )" // Leave 20px for the scroll bar.
 
                 value_element.innerHTML = "<button style='background: darkgray; padding:0px; margin: 0px; border: 1px solid black'>" + showValueBtnText + "</button>";
                 let viewHideBtn = value_element.querySelector("button");
@@ -12330,7 +12331,7 @@ LGraphNode.prototype.executeAction = function(action)
                     let newValueInputDiv = document.createElement("div");
                     newValueInputDiv.style.display = "flex";
                     newValueInputDiv.innerHTML = "<input style='height: auto'></input>" +
-                        "<button style='border: 1px solid black; background: darkgray; padding: 0px; margin: 0px'>OK</button>";
+                        "<button style='border: 1px solid black; background: darkgray; padding: 0px; margin: 0px; width: auto'>OK</button>";
                     let newValueInput = newValueInputDiv.querySelector("input");
 
                     let okButton = newValueInputDiv.querySelector("button");
