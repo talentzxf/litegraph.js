@@ -205,18 +205,45 @@ LiteGraph.registerNodeType("features/properties_editor", TestPropertyEditorsNode
 
 function ArrayNode() {
     this.properties = {
-        arrayValue: [], arrayValue2: []
+        arrayValue: [],
+        arrayValue2: []
     };
 
-    this.properties_info = [{
-        name: "arrayValue", type: "array", callback: (name, value, options) => {
-            console.log("Here Here 1 !!!");
-        }, allowEmpty: false
-    }, {
-        name: "arrayValue2", type: "array", callback: (name, value, options) => {
-            console.log("Here Here 2 !!!");
-        }, allowEmpty: true
-    }];
+    this.properties_info = [
+        {
+            name: "arrayValue", type: "array", callback: (name, value, options) => {
+                console.log("Here Here 1 !!!");
+
+                // Remove all outputs that's not in the value.
+                let outputNodes = this.outputs;
+                if (outputNodes != null && outputNodes.length > 0) {
+                    for (let output of outputNodes) {
+                        if (!value.includes(output.name)) {
+                            let slotId = this.findOutputSlot(output.name);
+                            this.removeOutput(slotId);
+                        }
+                    }
+                }
+
+                for (let val of value) {
+                    let slotId = this.findOutputSlot(val);
+                    if (slotId == -1) {
+                        this.addOutput(val, LiteGraph.EVENT);
+                    }
+                }
+
+                graph.afterChange(this);
+            },
+            allowEmpty: false,
+            unique: true
+        },
+        {
+            name: "arrayValue2", type: "array", callback: (name, value, options) => {
+                console.log("Here Here 2 !!!");
+            },
+            allowEmpty: true
+        }
+    ];
 }
 
 LiteGraph.registerNodeType("logic/array", ArrayNode);

@@ -12331,6 +12331,13 @@ LGraphNode.prototype.executeAction = function(action)
                                 return
                         }
 
+                        if(options?.unique == true){
+                            for(let val of value){
+                                if(newString == val)
+                                    return
+                            }
+                        }
+
                         value.push(newString)
                         newValueInput.value = ""
 
