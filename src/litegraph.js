@@ -12272,33 +12272,50 @@ LGraphNode.prototype.executeAction = function(action)
                     value = [];
                 }
 
-                value_element.innerText = "Click to view array contents";
+                let propname = elem.dataset["property"]
+
+                let showValueBtnText = "Click to view array contents"
+                let hideValueBtnText = "Click to hide array contents"
+
+                value_element.innerHTML = "<button>" + showValueBtnText + "</button>";
+                let viewHideBtn = value_element.querySelector("button")
 
                 function innerRefreshData(parentDiv){
                     parentDiv.innerHTML = ""
+                    let id = 0
                     for (let val of value) {
+                        let childElement = document.createElement("div")
                         let childValSpan = document.createElement("span");
                         childValSpan.innerText = val;
-                        parentDiv.appendChild(childValSpan);
+                        childValSpan.dataset["id"] = id
+                        let deleteBtn = document.createElement("button")
+                        deleteBtn.innerText = "Delete"
+                        deleteBtn.dataset["targetId"] = id
+                        deleteBtn.addEventListener("click", (e)=>{
+                            let targetId = e.target.dataset["targetId"]
+                            value.splice(targetId, 1)
+
+                            innerRefreshData(parentDiv)
+                            innerChange(propname, value)
+                        })
+                        childElement.appendChild(childValSpan);
+                        childElement.appendChild(deleteBtn)
+                        parentDiv.appendChild(childElement)
+                        id++
                     }
                 }
 
                 let arrayEditorIsVisible = false;
                 let arrayEditor = null;
-                value_element.addEventListener("click", (e) => {
+                viewHideBtn.addEventListener("click", (e) => {
                     if (arrayEditor == null) {
                         arrayEditor = document.createElement("div");
                         arrayEditor.style.display = "flex"
                         arrayEditor.style.flexDirection = "column"
-                        elem.appendChild(arrayEditor);
+                        value_element.appendChild(arrayEditor);
                     }
 
-                    arrayEditor.innerHTML = "<span>Array Values</span>"
-
-                    let contentDiv = document.createElement("div")
-                    innerRefreshData(contentDiv)
-
-                    arrayEditor.appendChild(contentDiv)
+                    arrayEditor.innerHTML = ""
 
                     let newValueInputDiv = document.createElement("div")
                     newValueInputDiv.style.display = "flex"
@@ -12308,19 +12325,34 @@ LGraphNode.prototype.executeAction = function(action)
                     let okButton = newValueInputDiv.querySelector("button")
                     okButton.addEventListener("click", (e)=>{
                         let newString = newValueInput.value
+
+                        if(options.hasOwnProperty("allowEmpty") && options.allowEmpty == false){
+                            if(newString.length == 0)
+                                return
+                        }
+
                         value.push(newString)
+                        newValueInput.value = ""
 
                         innerRefreshData(contentDiv)
 
                         innerChange(propname, value)
                     })
 
+                    let contentDiv = document.createElement("div")
+                    contentDiv.style.display = "flex"
+                    contentDiv.style.flexDirection = "column"
+
+                    innerRefreshData(contentDiv)
                     arrayEditor.appendChild(newValueInputDiv);
+                    arrayEditor.appendChild(contentDiv)
 
                     if (arrayEditorIsVisible) {
                         arrayEditor.style.display = "none";
+                        viewHideBtn.innerText = showValueBtnText
                     } else {
                         arrayEditor.style.display = "flex";
+                        viewHideBtn.innerText = hideValueBtnText
                     }
                     arrayEditorIsVisible = !arrayEditorIsVisible;
                 });

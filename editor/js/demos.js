@@ -53,8 +53,7 @@ function sortTest() {
 
     rand.connect(0, nodes[0], 0);
 
-    for (var i = 0; i < nodes.length - 1; i++)
-        nodes[i].connect(0, nodes[i + 1], 0);
+    for (var i = 0; i < nodes.length - 1; i++) nodes[i].connect(0, nodes[i + 1], 0);
 }
 
 function benchmark() {
@@ -66,8 +65,7 @@ function benchmark() {
         nodes.push(n);
     }
 
-    for (var i = 0; i < nodes.length; i++)
-        nodes[(Math.random() * nodes.length) | 0].connect(0, nodes[(Math.random() * nodes.length) | 0], 0);
+    for (var i = 0; i < nodes.length; i++) nodes[(Math.random() * nodes.length) | 0].connect(0, nodes[(Math.random() * nodes.length) | 0], 0);
 }
 
 
@@ -117,8 +115,7 @@ TestSpecialNode.title_mode = LiteGraph.TRANSPARENT_TITLE;
 TestSpecialNode.slot_start_y = 20;
 
 TestSpecialNode.prototype.onDrawBackground = function(ctx) {
-    if (this.flags.collapsed)
-        return;
+    if (this.flags.collapsed) return;
 
     ctx.fillStyle = "#555";
     ctx.fillRect(0, 0, this.size[0], 20);
@@ -160,18 +157,13 @@ TestSpecialNode.prototype.onDrawBackground = function(ctx) {
 };
 
 TestSpecialNode.prototype.onMouseDown = function(e, pos) {
-    if (pos[1] > 20)
-        return;
+    if (pos[1] > 20) return;
 
-    if (pos[0] > this.size[0] - 20)
-        this.enabled = !this.enabled;
-    else if (pos[0] > this.size[0] - 40)
-        this.visible = !this.visible;
+    if (pos[0] > this.size[0] - 20) this.enabled = !this.enabled; else if (pos[0] > this.size[0] - 40) this.visible = !this.visible;
 };
 
 TestSpecialNode.prototype.onBounding = function(rect) {
-    if (!this.flags.collapsed && this.mouseOver)
-        rect[3] = this.size[1] + 20;
+    if (!this.flags.collapsed && this.mouseOver) rect[3] = this.size[1] + 20;
 };
 
 LiteGraph.registerNodeType("features/shape", TestSpecialNode);
@@ -195,13 +187,8 @@ LiteGraph.registerNodeType("features/slots", TestSlotsNode);
 //Show value inside the debug console
 function TestPropertyEditorsNode() {
     this.properties = {
-        name: "foo",
-        age: 10,
-        alive: true,
-        children: ["John", "Emily", "Charles"],
-        skills: {
-            speed: 10,
-            dexterity: 100
+        name: "foo", age: 10, alive: true, children: ["John", "Emily", "Charles"], skills: {
+            speed: 10, dexterity: 100
         }
     };
 
@@ -218,13 +205,19 @@ LiteGraph.registerNodeType("features/properties_editor", TestPropertyEditorsNode
 
 function ArrayNode() {
     this.properties = {
-        arrayValue: []
+        arrayValue: [], arrayValue2: []
     };
-}
 
-ArrayNode["@arrayValue"] = {
-    type: "array"
-};
+    this.properties_info = [{
+        name: "arrayValue", type: "array", callback: (name, value, options) => {
+            console.log("Here Here 1 !!!");
+        }, allowEmpty: false
+    }, {
+        name: "arrayValue2", type: "array", callback: (name, value, options) => {
+            console.log("Here Here 2 !!!");
+        }, allowEmpty: true
+    }];
+}
 
 LiteGraph.registerNodeType("logic/array", ArrayNode);
 
