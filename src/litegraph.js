@@ -12277,7 +12277,7 @@ LGraphNode.prototype.executeAction = function(action)
                 let showValueBtnText = "Click to view array contents";
                 let hideValueBtnText = "Click to hide array contents";
 
-                value_element.innerHTML = "<button>" + showValueBtnText + "</button>";
+                value_element.innerHTML = "<button style='background: darkgray; padding:0px; margin: 0px; border: 1px solid black'>" + showValueBtnText + "</button>";
                 let viewHideBtn = value_element.querySelector("button");
 
                 function innerRefreshData(parentDiv) {
@@ -12286,12 +12286,20 @@ LGraphNode.prototype.executeAction = function(action)
                     for (let val of value) {
                         let childElement = document.createElement("div");
                         let childValSpan = document.createElement("span");
+                        childValSpan.style.padding = "5px"
                         childValSpan.innerText = val;
                         childValSpan.dataset["id"] = id;
                         let deleteBtn = document.createElement("button");
+                        deleteBtn.style.padding = "0px";
+                        deleteBtn.style.margin = "0px";
+                        deleteBtn.style.background = "darkgray";
+                        deleteBtn.style.border = "1px solid black";
+                        deleteBtn.style.width = "auto"
                         deleteBtn.innerText = "Delete";
                         deleteBtn.dataset["targetId"] = id;
                         deleteBtn.addEventListener("click", (e) => {
+                            e.preventDefault();
+
                             let targetId = e.target.dataset["targetId"];
                             value.splice(targetId, 1);
 
@@ -12308,6 +12316,8 @@ LGraphNode.prototype.executeAction = function(action)
                 let arrayEditorIsVisible = false;
                 let arrayEditor = null;
                 viewHideBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+
                     if (arrayEditor == null) {
                         arrayEditor = document.createElement("div");
                         arrayEditor.style.display = "flex";
@@ -12319,11 +12329,14 @@ LGraphNode.prototype.executeAction = function(action)
 
                     let newValueInputDiv = document.createElement("div");
                     newValueInputDiv.style.display = "flex";
-                    newValueInputDiv.innerHTML = "<input></input><button>OK</button>";
+                    newValueInputDiv.innerHTML = "<input style='height: auto'></input>" +
+                        "<button style='border: 1px solid black; background: darkgray; padding: 0px; margin: 0px'>OK</button>";
                     let newValueInput = newValueInputDiv.querySelector("input");
 
                     let okButton = newValueInputDiv.querySelector("button");
                     okButton.addEventListener("click", (e) => {
+                        e.preventDefault();
+
                         let newString = newValueInput.value;
 
                         if (options.hasOwnProperty("allowEmpty") && options.allowEmpty == false) {

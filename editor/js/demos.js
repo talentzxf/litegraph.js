@@ -212,8 +212,6 @@ function ArrayNode() {
     this.properties_info = [
         {
             name: "arrayValue", type: "array", callback: (name, value, options) => {
-                console.log("Here Here 1 !!!");
-
                 // Remove all outputs that's not in the value.
                 let outputNodes = this.outputs;
                 if (outputNodes != null && outputNodes.length > 0) {
@@ -239,7 +237,6 @@ function ArrayNode() {
         },
         {
             name: "arrayValue2", type: "array", callback: (name, value, options) => {
-                console.log("Here Here 2 !!!");
             },
             allowEmpty: true
         }
