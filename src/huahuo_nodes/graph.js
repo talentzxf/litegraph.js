@@ -558,7 +558,7 @@
         // }
 
         if(this.graph && this.graph.onInputNodeRemoved){
-            this.graph.onInputNodeRemoved()
+            this.graph.onInputNodeRemoved(this)
         }
     };
 
