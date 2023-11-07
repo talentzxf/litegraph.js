@@ -12686,7 +12686,7 @@ LGraphNode.prototype.executeAction = function(action)
             let updateEleFunc = function(input) {
                 if (input.not_subgraph_input)
                     return;
-                var html = "<button width='fit-content'>&#10005;</button> <span class='bullet_icon'></span><span class='name'></span><span class='type'></span>";
+                var html = "<button style='width: fit-content'>&#10005;</button> <span class='bullet_icon'></span><span class='name'></span><span class='type'></span>";
                 var elem = panel.addHTML(html, "subgraph_property");
                 elem.style.display = "flex"
                 elem.style.alignItems = "baseline"
