@@ -8581,7 +8581,6 @@ LGraphNode.prototype.executeAction = function(action)
                     var doStroke = true;
 
                     if (
-                        slot.type === LiteGraph.EVENT ||
                         slot.shape === LiteGraph.BOX_SHAPE
                     ) {
                         if (horizontal) {
@@ -8599,7 +8598,23 @@ LGraphNode.prototype.executeAction = function(action)
                                 10
                             );
                         }
-                    } else if (slot_shape === LiteGraph.ARROW_SHAPE) {
+                    } else if(slot.type === LiteGraph.EVENT){  //
+                        let x = pos[0] - 6 + 0.5
+                        let y = pos[1] - 5 + 0.5
+                        let width = 14
+                        let height = 10
+                        ctx.rect(
+                            x,
+                            y,
+                            width,
+                            height
+                        );
+                        ctx.moveTo(x + width, y)
+                        ctx.lineTo(x + width + width / 2, y + height / 2)
+                        ctx.lineTo(x + width, y + height)
+                        ctx.fill()
+                    }
+                    else if (slot_shape === LiteGraph.ARROW_SHAPE) {
                         ctx.moveTo(pos[0] + 8, pos[1] + 0.5);
                         ctx.lineTo(pos[0] - 4, pos[1] + 6 + 0.5);
                         ctx.lineTo(pos[0] - 4, pos[1] - 6 + 0.5);
@@ -8680,7 +8695,6 @@ LGraphNode.prototype.executeAction = function(action)
                     var doStroke = true;
 
                     if (
-                        slot_type === LiteGraph.EVENT ||
                         slot_shape === LiteGraph.BOX_SHAPE
                     ) {
                         if (horizontal) {
@@ -8698,7 +8712,24 @@ LGraphNode.prototype.executeAction = function(action)
                                 10
                             );
                         }
-                    } else if (slot_shape === LiteGraph.ARROW_SHAPE) {
+                    } else if(slot_type === LiteGraph.EVENT){
+                        let x = pos[0] - 14 + 0.5
+                        let y = pos[1] - 5 + 0.5
+                        let width = 14
+                        let height = 10
+                        ctx.rect(
+                            x,
+                            y,
+                            width,
+                            height
+                        );
+                        ctx.moveTo(x + width, y)
+                        ctx.lineTo(x + width + width / 2, y + height / 2)
+                        ctx.lineTo(x + width, y + height)
+                        ctx.fill()
+                        doStroke = false
+                    }
+                    else if (slot_shape === LiteGraph.ARROW_SHAPE) {
                         ctx.moveTo(pos[0] + 8, pos[1] + 0.5);
                         ctx.lineTo(pos[0] - 4, pos[1] + 6 + 0.5);
                         ctx.lineTo(pos[0] - 4, pos[1] - 6 + 0.5);
